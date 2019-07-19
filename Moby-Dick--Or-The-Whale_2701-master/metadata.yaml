@@ -1,0 +1,45 @@
+_repo: Moby-Dick--Or-The-Whale_2701
+_version: 0.2.6
+covers:
+- attribution: Black Dwarf Designs, 2015
+  cover_type: original
+  image_path: cover.jpg
+  rights: Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+  rights_url: https://creativecommons.org/licenses/by-nc/4.0/
+creator:
+  author:
+    agent_name: Melville, Herman
+    alias: Melville, Hermann
+    birthdate: 1819
+    deathdate: 1891
+    gutenberg_agent_id: '9'
+    url: http://www.gutenberg.org/2009/agents/9
+    wikipedia: http://en.wikipedia.org/wiki/Herman_Melville
+description: 'See also Etext #2489, Etext #15, and a computer-generated audio file,
+  Etext #9147.'
+edition_identifiers:
+  edition_id: http://www.gutenberg.org/ebooks/2701#Moby-Dick--Or-The-Whale
+gutenberg_bookshelf: Best Books Ever Listings
+gutenberg_issued: '2001-07-01'
+gutenberg_type: Text
+identifiers:
+  gutenberg: '2701'
+language: en
+publication_date: '2015-08-01'
+publisher: Recovering the Classics
+rights: CC BY-NC
+rights_url: http://creativecommons.org/licenses/by-nc/4.0/
+subjects:
+- '!lcc: PS'
+- '!lcsh: Psychological fiction'
+- '!lcsh: Whaling ships -- Fiction'
+- '!lcsh: Whales -- Fiction'
+- '!lcsh: Whaling -- Fiction'
+- '!lcsh: Adventure stories'
+- '!lcsh: Ahab, Captain (Fictitious character) -- Fiction'
+- '!lcsh: Ship captains -- Fiction'
+- '!lcsh: Sea stories'
+- '!lcsh: Mentally ill -- Fiction'
+- GITenberg
+title: Moby Dick; Or, The Whale
+url: http://www.gutenberg.org/ebooks/2701
