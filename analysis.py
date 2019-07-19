@@ -4,7 +4,7 @@ import collections
 import nltk
 import sys
 import re
-
+import numpy as np
 
 class NovelAnalysis(object):
     """class for Project Gutenberg class NovelAnalysis"""
@@ -37,7 +37,7 @@ class NovelAnalysis(object):
         newToks = []
         for tok in toks:
             # remove punctuation
-            if tok not in punct:
+            if tok not in punct and not tok.isnumeric():
                 newToks.append(tok.lower())
         return newToks
 
@@ -55,10 +55,10 @@ class NovelAnalysis(object):
         text = text.replace('\n', ' ')
         chapters = re.split("CHAPTER [0-9]+\.", text, flags=re.IGNORECASE)[1:]
         self.chapters = chapters
-        for idx, words in enumerate(chapters):
+        for idx, words in enumerate(chapters,start=1):
             toks = self.tokenize(words)
             counts = collections.Counter(toks)
-            self.wordsByChapter[idx+1] = counts
+            self.wordsByChapter[idx] = counts
 
 
     def getTotalNumberOfWords(self, file):
@@ -113,7 +113,7 @@ class NovelAnalysis(object):
         return self.sortedWords[:20]
 
 
-    def get20MostInterestingFrequentWords(self):
+    def get20MostInterestingFrequentWords(self, filterN=100):
         '''
         Implement a new algorithm that filters the most
         common 100 English words and then returns the 20 most frequently used
@@ -126,7 +126,6 @@ class NovelAnalysis(object):
         commonFile = '1-1000.txt'
         with open(commonFile, 'r') as f:
             commonWords = f.read().splitlines()
-        filterN = 100
 
         commonWords = [w.lower() for w in commonWords]
         commonWords = commonWords[:filterN]
@@ -162,14 +161,14 @@ class NovelAnalysis(object):
         '''
         self.checkFilename()
         self.separateChapters()
-
+        word = word.lower()
         chaps = []
         for ch, counts in self.wordsByChapter.items():
             if word in counts:
                 chaps.append(counts[word])
             else:
                 chaps.append(0) 
-
+        print(sum(chaps))
         return chaps
 
 
@@ -185,6 +184,7 @@ class NovelAnalysis(object):
 
         quote = self.tokenize(quote)
         quote = ' '.join(quote)
+        print(quote)
         size = len(quote)
         for ch, words in enumerate(self.chapters, start=1):
             toks = self.tokenize(words)
@@ -211,31 +211,52 @@ class NovelAnalysis(object):
         20 times until we have randomly picked 19 other words to complete 
         our sentence
         '''
+        self.checkFilename()
+        if not self.allWords:
+            text = self.readFile(self.filename)
+            self.allWords = self.tokenize(text)
+
+        # look through words and save words that follow (with counts)
+        bigrams = self.findBigrams()
+
         word = 'the'
-        sentence = 'The'
+        sentence = ['The']
+        while len(sentence) < 20:
+            # obtain probabilities based on counts
+            words = [(w,c) for w,c in bigrams[word].items()]
+            total = sum([c for w,c in words])
+            probs = [float(c/total) for w,c in words]
+            # randomly pick next word
+            arr = np.random.choice(len(words), 1, p=probs)
+            word = words[arr[0]][0]
+            sentence.append(word)
+
+        return ' '.join(sentence)
 
 
-        return sentence
+    def findBigrams(self):
+        bigrams = collections.defaultdict(dict)
+
+        for w1, w2 in zip(self.allWords, self.allWords[1:]):
+            if w1 not in bigrams:
+                bigrams[w1][w2] = 0
+            elif w2 not in bigrams[w1]:
+                bigrams[w1][w2] = 0
+            bigrams[w1][w2] += 1
+
+        return bigrams
+
+
+
 
 file = '2701.txt'
-word = 'captain'
 n = NovelAnalysis()
 print('total words', n.getTotalNumberOfWords(file))
-print('unique', n.getTotalUniqueWords())
-print('most frequent', n.get20MostFrequentWords(file))
-print()
-print('most intr freq', n.get20MostInterestingFrequentWords())
-print()
-print('least frequent', n.get20LeastFrequentWords())
-print()
-print('freq word:', word, n.getFrequencyOfWord(word))
-print()
-quote = 'At day-break, the three mast-heads were punctually manned afresh.'
-print('find quote (134)', quote, '\n' ,n.getChapterQuoteAppears(quote))
-print()
-quote = 'aye aye sir cheerily cried little'
-print('find quote (48)', quote, '\n', n.getChapterQuoteAppears(quote))
-print()
+
+for i in range(15):
+    print('sentence:', n.generateSentence())
+    print()
+
 
 
 
