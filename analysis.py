@@ -19,8 +19,8 @@ class NovelAnalysis(object):
 
     def readFile(self, file):
         '''
-        takes in .txt file, tokenizes file, removes punctuation
-        return revised tokens
+        takes in .txt file
+        returns text from given file
         '''
         with open(file, 'r') as f:
             text = f.read()
@@ -28,6 +28,9 @@ class NovelAnalysis(object):
         return text
 
     def tokenize(self, text):
+        '''
+        tokenizes text, removing punctuation marks
+        '''
         punct = set(punctuation)
         punct.add("--")
         punct.add("''")
@@ -36,7 +39,7 @@ class NovelAnalysis(object):
         toks = nltk.word_tokenize(text)
         newToks = []
         for tok in toks:
-            # remove punctuation
+            # remove punctuation and numbers
             if tok not in punct and not tok.isnumeric():
                 newToks.append(tok.lower())
         return newToks
@@ -48,6 +51,9 @@ class NovelAnalysis(object):
 
 
     def separateChapters(self):
+        '''
+        separates novel by chapters and stores corresponding text to chapter
+        '''
         # read novel, separate by chapter
         # for each chapter, have a dictionary of word:count
         with open(self.filename, 'r') as f:
@@ -75,7 +81,7 @@ class NovelAnalysis(object):
 
     def getTotalUniqueWords(self):
         ''' 
-        return total number of unique words
+        returns total number of unique words
         '''
         self.checkFilename()
         if not self.allWords:
@@ -97,7 +103,7 @@ class NovelAnalysis(object):
         '''
         takes in a .txt file and returns an array of words and number of times
         they were used.
-        return the 20 most frequently used words in the novel and 
+        returns the 20 most frequently used words in the novel and 
         '''
         if not self.filename:
             self.filename = file
@@ -115,12 +121,8 @@ class NovelAnalysis(object):
 
     def get20MostInterestingFrequentWords(self, filterN=100):
         '''
-        Implement a new algorithm that filters the most
-        common 100 English words and then returns the 20 most frequently used
-        words and the number of times they were used. 
-        Since the list gives us 1000 words,
-        feel free to tune your algorithm to filter the most common 100, 200,
-        or 300 words and see how it affects the outcomes.
+        filters the most common 100 English words and then returns 
+        the 20 most frequently used words and the number of times they were used. 
         '''
         self.checkFilename()
         commonFile = '1-1000.txt'
@@ -143,7 +145,7 @@ class NovelAnalysis(object):
     def get20LeastFrequentWords(self):
 
         '''
-        Returns the 20 LEAST frequently used
+        returns the 20 LEAST frequently used
         words and the number of times they were used.
         '''
         self.checkFilename()
@@ -157,7 +159,7 @@ class NovelAnalysis(object):
         '''
         method that takes in a word and returns an array of the number of the times the 
         word was used in each chapter.
-        Returns array of size equal to the number of chapters
+        returns array of size equal to the number of chapters
         '''
         self.checkFilename()
         self.separateChapters()
@@ -192,6 +194,7 @@ class NovelAnalysis(object):
             if quote in toks:
                 return ch 
 
+        # quote not found in novel
         return -1
 
 
@@ -199,17 +202,8 @@ class NovelAnalysis(object):
     def generateSentence(self):
 
         '''
-        Many writers have a unique type of writing style that can be easily 
-        recognized based on the types of words they use and their sentence 
-        structures. For this part of the project, we want to generate a 
-        sentence  in the author’s writing style. In order to do this, we 
-        will generate a  sentence word by word. We will start off our
-        sentence with the word ‘The’. To generate the rest of the sentence, 
-        we will parse through the book, look for all the instances of the 
-        word ‘the’, store the word that comes after ‘the’, then randomly 
-        pick one of the words. We repeat this process
-        20 times until we have randomly picked 19 other words to complete 
-        our sentence
+        generate a sentence word by word by start with the word ‘The’ 
+        returns a randomly generated sentence with 20 words
         '''
         self.checkFilename()
         if not self.allWords:
@@ -231,10 +225,14 @@ class NovelAnalysis(object):
             word = words[arr[0]][0]
             sentence.append(word)
 
-        return ' '.join(sentence)
+        final = ' '.join(sentence)
+        return "'" + final + "'"
 
 
     def findBigrams(self):
+        '''
+        creates a dictionary of bigrams with word frequencies
+        '''
         bigrams = collections.defaultdict(dict)
 
         for w1, w2 in zip(self.allWords, self.allWords[1:]):
@@ -245,24 +243,4 @@ class NovelAnalysis(object):
             bigrams[w1][w2] += 1
 
         return bigrams
-
-
-
-
-file = '2701.txt'
-n = NovelAnalysis()
-print('total words', n.getTotalNumberOfWords(file))
-
-for i in range(15):
-    print('sentence:', n.generateSentence())
-    print()
-
-
-
-
-
-
-
-
-
 
